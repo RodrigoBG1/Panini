@@ -2,6 +2,12 @@ import { useState, useEffect } from 'react'
 import { supabase } from '../lib/supabase'
 import { COUNTRIES, TOTAL_STICKERS } from '../data/countries'
 import StickerCard from '../components/StickerCard'
+import SearchSelect from '../components/SearchSelect'
+
+const countryOptions = [
+  { value: '', label: 'Todos los países' },
+  ...COUNTRIES.map(c => ({ value: c.code, label: `${c.flag} ${c.code} — ${c.name}` })),
+]
 
 export default function FaltantesScreen() {
   const [stickers, setStickers] = useState([])
@@ -98,27 +104,12 @@ export default function FaltantesScreen() {
             </button>
           )}
         </div>
-        <select
+        <SearchSelect
+          options={countryOptions}
           value={filterCountry}
-          onChange={e => setFilterCountry(e.target.value)}
-          style={{
-            width: '100%',
-            background: '#1a1a38',
-            border: '1px solid rgba(255,255,255,0.1)',
-            borderRadius: 10,
-            color: filterCountry ? '#fff' : 'rgba(255,255,255,0.35)',
-            fontSize: 14,
-            padding: '10px 36px 10px 14px',
-            cursor: 'pointer',
-          }}
-        >
-          <option value="" style={{ color: '#666', background: '#1a1a38' }}>Todos los países</option>
-          {COUNTRIES.map(c => (
-            <option key={c.code} value={c.code} style={{ color: '#fff', background: '#1a1a38' }}>
-              {c.flag} {c.code} — {c.name}
-            </option>
-          ))}
-        </select>
+          onChange={setFilterCountry}
+          placeholder="Todos los países"
+        />
       </div>
 
       {/* Counter */}

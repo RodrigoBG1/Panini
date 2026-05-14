@@ -2,6 +2,12 @@ import { useState, useEffect } from 'react'
 import { supabase } from '../lib/supabase'
 import { COUNTRIES, TOTAL_STICKERS } from '../data/countries'
 import ProgressBar from '../components/ProgressBar'
+import SearchSelect from '../components/SearchSelect'
+
+const countryOptions = COUNTRIES.map(c => ({
+  value: c.code,
+  label: `${c.flag} ${c.code} — ${c.name}`,
+}))
 
 export default function AgregarScreen({ showToast }) {
   const [selectedCountry, setSelectedCountry] = useState('')
@@ -11,7 +17,9 @@ export default function AgregarScreen({ showToast }) {
   const [ownedCount, setOwnedCount] = useState(0)
 
   const country = COUNTRIES.find(c => c.code === selectedCountry)
-  const playerNumbers = country ? Array.from({ length: country.count }, (_, i) => i + 1) : []
+  const numberOptions = country
+    ? Array.from({ length: country.count }, (_, i) => ({ value: String(i + 1), label: `#${i + 1}` }))
+    : []
 
   useEffect(() => {
     fetchOwnedCount()
@@ -83,27 +91,12 @@ export default function AgregarScreen({ showToast }) {
           <label style={{ display: 'block', fontSize: 11, textTransform: 'uppercase', letterSpacing: 1, color: 'rgba(255,255,255,0.4)', fontWeight: 600, marginBottom: 8 }}>
             País / Colección
           </label>
-          <select
+          <SearchSelect
+            options={countryOptions}
             value={selectedCountry}
-            onChange={e => setSelectedCountry(e.target.value)}
-            style={{
-              width: '100%',
-              background: '#1a1a38',
-              border: '1px solid rgba(255,255,255,0.1)',
-              borderRadius: 10,
-              color: selectedCountry ? '#fff' : 'rgba(255,255,255,0.35)',
-              fontSize: 15,
-              padding: '13px 40px 13px 14px',
-              cursor: 'pointer',
-            }}
-          >
-            <option value="" disabled style={{ color: '#666' }}>Seleccionar país...</option>
-            {COUNTRIES.map(c => (
-              <option key={c.code} value={c.code} style={{ color: '#fff', background: '#1a1a38' }}>
-                {c.flag} {c.code} — {c.name}
-              </option>
-            ))}
-          </select>
+            onChange={setSelectedCountry}
+            placeholder="Seleccionar país..."
+          />
         </div>
 
         {/* Player number selector */}
@@ -111,29 +104,13 @@ export default function AgregarScreen({ showToast }) {
           <label style={{ display: 'block', fontSize: 11, textTransform: 'uppercase', letterSpacing: 1, color: 'rgba(255,255,255,0.4)', fontWeight: 600, marginBottom: 8 }}>
             Número de estampa
           </label>
-          <select
+          <SearchSelect
+            options={numberOptions}
             value={selectedNumber}
-            onChange={e => setSelectedNumber(e.target.value)}
+            onChange={setSelectedNumber}
+            placeholder="Seleccionar número..."
             disabled={!selectedCountry}
-            style={{
-              width: '100%',
-              background: '#1a1a38',
-              border: '1px solid rgba(255,255,255,0.1)',
-              borderRadius: 10,
-              color: selectedNumber ? '#fff' : 'rgba(255,255,255,0.35)',
-              fontSize: 15,
-              padding: '13px 40px 13px 14px',
-              cursor: selectedCountry ? 'pointer' : 'not-allowed',
-              opacity: selectedCountry ? 1 : 0.5,
-            }}
-          >
-            <option value="" disabled style={{ color: '#666' }}>Seleccionar número...</option>
-            {playerNumbers.map(n => (
-              <option key={n} value={n} style={{ color: '#fff', background: '#1a1a38' }}>
-                #{n}
-              </option>
-            ))}
-          </select>
+          />
         </div>
 
         {/* Status badge */}
