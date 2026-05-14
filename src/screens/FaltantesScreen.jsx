@@ -3,7 +3,7 @@ import { supabase } from '../lib/supabase'
 import { COUNTRIES, TOTAL_STICKERS } from '../data/countries'
 import StickerCard from '../components/StickerCard'
 
-export default function FaltantesScreen({ showToast }) {
+export default function FaltantesScreen() {
   const [stickers, setStickers] = useState([])
   const [loading, setLoading] = useState(true)
   const [filterCountry, setFilterCountry] = useState('')
@@ -25,17 +25,6 @@ export default function FaltantesScreen({ showToast }) {
       .order('player_number')
     setStickers(data ?? [])
     setLoading(false)
-  }
-
-  async function handleAdd(sticker) {
-    await supabase
-      .from('stickers')
-      .update({ quantity: 1 })
-      .eq('country_code', sticker.country_code)
-      .eq('player_number', sticker.player_number)
-    setStickers(prev => prev.filter(s => !(s.country_code === sticker.country_code && s.player_number === sticker.player_number)))
-    setOwnedCount(prev => prev + 1)
-    showToast('Estampa agregada ✓', 'added')
   }
 
   async function fetchOwnedCount() {
@@ -158,7 +147,7 @@ export default function FaltantesScreen({ showToast }) {
         ) : (
           <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
             {filtered.map(s => (
-              <StickerCard key={`${s.country_code}-${s.player_number}`} sticker={s} onAdd={() => handleAdd(s)} />
+              <StickerCard key={`${s.country_code}-${s.player_number}`} sticker={s} />
             ))}
           </div>
         )}
