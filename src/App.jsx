@@ -26,7 +26,7 @@ export default function App() {
       <div style={{ flex: 1, display: 'flex', flexDirection: 'column', overflow: 'hidden' }}>
         {activeTab === 'agregar'   && <AgregarScreen   showToast={showToast} />}
         {activeTab === 'repetidas' && <RepetidasScreen />}
-        {activeTab === 'faltantes' && <FaltantesScreen />}
+        {activeTab === 'faltantes' && <FaltantesScreen showToast={showToast} />}
       </div>
 
       <Navbar active={activeTab} onChange={setActiveTab} />
